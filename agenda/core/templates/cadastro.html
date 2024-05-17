@@ -14,26 +14,27 @@
         <h1> Cadastro de Pessoas </h1>
         <h2> Agenda Pessoal </h2>
         <br>
-
-        <form action={% url 'core:create' %} novalidate method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <h5>
-                {{ form.nome.label }} : {{ form.nome }}
-            </h5>
-            <br>
-            <h5>
-                {{ form.telefone.label }}: {{ form.telefone }}
-            </h5>            
-            <br>
-            <h5>
-                {{ form.cpf.label }}: {{ form.cpf }}
-            </h5>
-            <br>
-            <br>
-            <center>
-                <input class="btn btn-primary" type="submit" value="Cadastrar"/>
-            </center>
-        </form>
+        <div class="container">
+            <form action={% url 'core:create' %} novalidate method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h5>
+                    {{ form.nome.label }} : {{ form.nome }}
+                </h5>
+                <br>
+                <h5>
+                    {{ form.telefone.label }}: {{ form.telefone }}
+                </h5>            
+                <br>
+                <h5>
+                    {{ form.cpf.label }}: {{ form.cpf }}
+                </h5>
+                <br>
+                <br>
+                <center>
+                    <input class="btn btn-primary" type="submit" value="Cadastrar"/>
+                </center>
+            </form>
+        </div> 
         {% if form.errors %}
             {% for field in form %}
                 {% for error in field.errors %}

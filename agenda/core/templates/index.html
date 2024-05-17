@@ -14,21 +14,23 @@
             <h1> Cadastro de Pessoas </h1>
             <h2> Agenda Pessoal </h2>
         <br>
-        <form action={% url 'core:create' %} novalidate method="GET">
-            <input class="btn btn-primary" type="submit" value="Cadastrar"/>              
-        </form>
-        <br>
-        <form action={% url 'core:read' %} novalidate method="GET">
-            <input class="btn btn-primary" type="submit" value="Listar"/>              
-        </form>
-        <br>
-        <form action={% url 'core:update' %} novalidate method="GET">
-            <input class="btn btn-primary" type="submit" value="Atualizar"/>              
-        </form>
-        <br>
-        <form action={% url 'core:delete' %} novalidate method="GET">
-            <input class="btn btn-primary" type="submit" value="Remover"/>              
-        </form>
+        <div class="container">
+            <form action={% url 'core:create' %} novalidate method="GET">
+                <input class="btn btn-primary" type="submit" value="Cadastrar"/>              
+            </form>
+            <br>
+            <form action={% url 'core:read' %} novalidate method="GET">
+                <input class="btn btn-primary" type="submit" value="Listar"/>              
+            </form>
+            <br>
+            <form action={% url 'core:update' %} novalidate method="GET">
+                <input class="btn btn-primary" type="submit" value="Atualizar"/>              
+            </form>
+            <br>
+            <form action={% url 'core:delete' %} novalidate method="GET">
+                <input class="btn btn-primary" type="submit" value="Remover"/>              
+            </form>
+        </div>
 
     </body>
 

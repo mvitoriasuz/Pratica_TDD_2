@@ -95,7 +95,7 @@ class AgendaFormTest(TestCase):
         form = AgendaForm(dados)
         errors = form.errors
         errors_list = errors['telefone']
-        msg = 'DDD válido somente o 19 e 16'
+        msg = 'DDD válido somente o 19'
         self.assertEqual([msg], errors_list)
 
     def test_form_wrong_CPF(self):

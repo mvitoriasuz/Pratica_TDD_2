@@ -16,25 +16,27 @@
         <br>
 
         {% if form %}
-        <form action={% url 'core:confirm_update' %} novalidate method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <input type="hidden" name="id" value={{ pk }}>
-            <h5>
-                {{ form.nome.label }} : {{ form.nome }}
-            </h5>
-            <br>
-            <h5>
-                {{ form.telefone.label }}: {{ form.telefone }}
-            </h5>
-            <br>
-            <h5>
-                {{ form.cpf.label }}: {{ form.cpf }}
-            </h5>
-            <br><br>
-            <center>
-                <input class="btn btn-primary" type="submit" value="Atualizar"/>
-            </center>
-        </form>
+        <div class="container">
+            <form action={% url 'core:confirm_update' %} novalidate method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="id" value={{ pk }}>
+                <h5>
+                    {{ form.nome.label }} : {{ form.nome }}
+                </h5>
+                <br>
+                <h5>
+                    {{ form.telefone.label }}: {{ form.telefone }}
+                </h5>
+                <br>
+                <h5>
+                    {{ form.cpf.label }}: {{ form.cpf }}
+                </h5>
+                <br><br>
+                <center>
+                    <input class="btn btn-primary" type="submit" value="Atualizar"/>
+                </center>
+            </form>
+        </div>
         {% if form.errors %}
             {% for field in form %}
                 {% for error in field.errors %}
