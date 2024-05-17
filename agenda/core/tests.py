@@ -37,7 +37,8 @@ class AgendaModelTest(TestCase):
     def setUp(self):
         self.agenda = AgendaModel(
             nome='José da Silva',
-            telefone='9999999999',)
+            telefone='9999999999',
+            cpf='12345678910',)
         self.agenda.save()
 
     def test_str(self):
@@ -50,29 +51,61 @@ class AgendaModelTest(TestCase):
         data = AgendaModel.objects.first()
         self.assertEqual(data.nome, 'José da Silva')
         self.assertEqual(data.telefone, '9999999999')
+        self.assertEqual(data.cpf, '12345678910')
 
+class AgendaModel_without_cpf_Test(TestCase):
+    def setUp(self):
+        self.agenda = AgendaModel(
+            nome='José da Silva',
+            telefone='9999999999')
+        self.agenda.save()
+
+    def test_str(self):
+        self.assertEqual(str(self.agenda), 'José da Silva')
+    
+    def test_data_saved(self):
+        data = AgendaModel.objects.first()
+        self.assertEqual(data.nome, 'José da Silva')
+        self.assertEqual(data.telefone, '9999999999')
+        self.assertEqual(data.cpf, '')
 
 class AgendaFormTest(TestCase):
     def test_unbounded_fields(self):
         form = AgendaForm()
-        expected = ['nome', 'telefone']
+        expected = ['nome', 'cpf', 'telefone']
         self.assertSequenceEqual(expected, list(form.fields))
 
     def test_form_all_OK(self):
-        dados = dict(nome='José da Silva', telefone='1999998888')
+        dados = dict(nome='José da Silva', cpf='12345678910', telefone='1999998888')
         form = AgendaForm(dados)
         errors = form.errors
         self.assertEqual({}, errors)
         self.assertEqual(form.cleaned_data['nome'], 'JOSÉ DA SILVA')
+
+    def test_form_all_OK_DDD_16(self):
+        dados = dict(nome='José da Silva', cpf='12345678910', telefone='1699998888')
+        form = AgendaForm(dados)
+        errors = form.errors
+        self.assertEqual({}, errors)
+        self.assertEqual(form.cleaned_data['nome'], 'JOSÉ DA SILVA')
+        self.assertEqual(form.cleaned_data['telefone'], '1699998888')
 
     def test_form_wrong_DDD(self):
         dados = dict(nome='José da Silva', telefone='9999998888')
         form = AgendaForm(dados)
         errors = form.errors
         errors_list = errors['telefone']
-        msg = 'DDD válido somente o 19'
+        msg = 'DDD válido somente o 19 e 16'
         self.assertEqual([msg], errors_list)
 
+    def test_form_wrong_CPF(self):
+        dados = dict(nome='José da Silva', telefone='1999998888', cpf='123')
+        form = AgendaForm(dados)
+        errors = form.errors
+        errors_list = errors['cpf']
+        msg = 'CPF deve conter exatamente 11 caracteres'
+        self.assertEqual([msg], errors_list)
+        
     def test_form_no_name(self):
         dados = dict(telefone='1999998888')
         form = AgendaForm(dados)
@@ -104,10 +137,19 @@ class Create_GET_Test(TestCase):
     def test_template_used(self):
         self.assertTemplateUsed(self.resp, 'cadastro.html')
 
+    def test_found_html(self):
+        tags = (
+            ('Cadastro de Pessoas', 1),
+            ('Agenda Pessoal', 1),
+            ('input', 6),
+        )
+        for text, count in tags:
+            with self.subTest():
+                self.assertContains(self.resp, text, count)
 
 class Create_POST_OK_Test(TestCase):
     def setUp(self):
-        data = {'nome': 'José da Silva',
+        data = {'nome': 'José da Silva','cpf': '12345678910',
                 'telefone': '1988887777',}
         self.resp = self.client.post(r('core:create'), data, follow=True)
         self.resp2 = self.client.post(r('core:create'), data)
@@ -156,7 +198,7 @@ class Read_GET_Test(TestCase):
 
 class Read_POST_OK_Test(TestCase):
     def setUp(self):
-        data = {'nome': 'José da Silva',
+        data = {'nome': 'José da Silva','cpf': '12345678910',
                 'telefone': '1988887777',}
         AgendaModel.objects.create(**data)
         data = {'id':1}
@@ -177,6 +219,7 @@ class Read_POST_OK_Test(TestCase):
             ('Cadastro de Pessoas', 1),
             ('Agenda Pessoal', 1),
             ('José da Silva', 1),
+            ('12345678910', 1),
             ('</body>', 1),
             ('</html>', 1),
         )
@@ -233,7 +276,7 @@ class Update_GET_Test(TestCase):
 
 class Update_POST_OK_Test(TestCase):
     def setUp(self):
-        data = {'nome': 'José da Silva',
+        data = {'nome': 'José da Silva','cpf': '12345678910',
                 'telefone': '1988887777',}
         AgendaModel.objects.create(**data)
         data = {'id':1}
@@ -254,6 +297,7 @@ class Update_POST_OK_Test(TestCase):
             ('Cadastro de Pessoas', 1),
             ('Agenda Pessoal', 1),
             ('José da Silva', 1),
+            ('12345678910', 1),
             ('</body>', 1),
             ('</html>', 1),
         )
@@ -306,10 +350,10 @@ class Confirm_Update_GET_Test(TestCase):
 
 class Confirm_Update_POST_OK_Test(TestCase):
     def setUp(self):
-        data = {'nome': 'José da Silva',
+        data = {'nome': 'José da Silva','cpf': '12345678910',
                 'telefone': '1988887777',}
         AgendaModel.objects.create(**data)
-        data = {'nome': 'Maria José',
+        data = {'nome': 'Maria José','cpf': '12345678910',
                 'telefone': '19666667777','id':1}
         self.resp = self.client.post(r('core:confirm_update'), data, follow=True)
         self.resp2 = self.client.post(r('core:confirm_update'), data)
